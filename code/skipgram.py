@@ -93,7 +93,7 @@ def train(center_node_placeholder, context_node_placeholder, negative_samples_pl
         iteration = 0
         while (dataset.epoch <= NUM_EPOCHS):
             current_epoch = dataset.epoch
-            center_node_batch, context_node_batch = dataset.get_batch(BATCH_SIZE)
+            center_node_batch, context_node_batch = dataset.get_batch_data(BATCH_SIZE)
             negative_samples = dataset.get_negative_samples(pos_index=context_node_batch[0], num_negatives=NUM_SAMPLED,
                                                             care_type=care_type)
             context_node_batch = context_node_batch.reshape((-1, 1))

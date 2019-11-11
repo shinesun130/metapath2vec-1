@@ -27,6 +27,7 @@ def parse_args():
     parser.add_argument('--max-keep-model', default=10, type=int, help='number of models to keep saving')
     parser.add_argument('--embedding-dim', default=16, type=int, help='embedding dimensions')
     parser.add_argument('--negative-samples', default=5, type=int, help='number of negative samples')
+    parser.add_argument('--batch_size', default=10000, type=int, help='batch size')
     parser.add_argument('--care-type', default=1, type=int,
                         help='care type or not. if 1, it cares (i.e. heterogeneous negative sampling). If 0, it does not care (i.e. normal negative sampling). ')
     parser.add_argument('--window', default=5, type=int, help='context window size')
@@ -44,7 +45,7 @@ def main(args):
         print("made the log directory", args.log)
 
     dataset = Dataset(random_walk_txt=args.walks, node_type_mapping_txt=args.types, window_size=args.window)
-    center_node_placeholder, context_node_placeholder, negative_samples_placeholder, loss = build_model(BATCH_SIZE=1,
+    center_node_placeholder, context_node_placeholder, negative_samples_placeholder, loss = build_model(BATCH_SIZE=args.batch_size,
                                                                                                         VOCAB_SIZE=len(
                                                                                                             dataset.nodeid2index),
                                                                                                         EMBED_SIZE=args.embedding_dim,

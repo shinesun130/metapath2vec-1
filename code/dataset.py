@@ -28,6 +28,7 @@ class Dataset(object):
         self.prepare_sampling_dist(index2frequency, index2type, type2indices)
         self.shffule()
         self.count = 0
+        self.cur = 0
         self.epoch = 1
 
     def parse_node_type_mapping_txt(self, node_type_mapping_txt, nodeid2index):
@@ -47,13 +48,16 @@ class Dataset(object):
         all_types = set(index2type.values())
         for node_type in all_types:
             type2indices[node_type] = []
+        print("finish get node type")
 
         for node_index, node_type in index2type.items():
             type2indices[node_type].append(node_index)
+        print("finish get node type 2 indices")
 
         # make array because it will be used with numpy later
         for node_type in all_types:
             type2indices[node_type] = np.array(type2indices[node_type])
+        print("finish convert node type 2 indices to numpy")
 
         return index2type, type2indices
 
@@ -74,8 +78,11 @@ class Dataset(object):
 
         print("The number of unique words:%d" % len(word_and_counts))
         index2token = dict((i, word) for i, word in enumerate(word_and_counts.keys()))
+        print("get index2token")
         token2index = dict((v, k) for k, v in index2token.items())
+        print("get token2index")
         index2frequency = dict((token2index[word], freq) for word, freq in word_and_counts.items())
+        print("get index2frequency")
 
         # word_word=scipy.sparse.lil_matrix((len(token2index), len(token2index)), dtype=np.int32)
         node_context_pairs = []  # let's use naive way now
@@ -94,6 +101,7 @@ class Dataset(object):
                         node_context_pairs.append((target_word_idx, contex_word_idx))
                         # word_word[target_word_idx,contex_word_idx]+=1
 
+        print("get node_context_pairs")
         # word_word=word_word.tocsr()
         return index2token, token2index, word_and_counts, index2frequency, node_context_pairs
 
@@ -105,8 +113,20 @@ class Dataset(object):
         self.count += 1
         return node_context_pair
 
+    def get_by_batch(self, batch_size):
+        if self.cur == len(self.node_context_pairs):
+            self.cur = 0
+            self.epoch += 1
+        node_context_pair = self.node_context_pairs[self.cur:self.cur + batch_size]
+        self.cur += batch_size
+        return node_context_pair
+
     def get_batch(self, batch_size):
         pairs = np.array([self.get_one_batch() for i in range(batch_size)])
+        return pairs[:, 0], pairs[:, 1]
+
+    def get_batch_data(self, batch_size):
+        pairs = np.array(self.get_by_batch(batch_size))
         return pairs[:, 0], pairs[:, 1]
 
     def shffule(self):
@@ -138,7 +158,7 @@ class Dataset(object):
         for i in range(len(index2frequency)):
             sampling_prob[i] = index2frequency[i]
         sampling_prob = sampling_prob ** (
-                    3.0 / 4.0)  # from http://mccormickml.com/2017/01/11/word2vec-tutorial-part-2-negative-sampling/
+                3.0 / 4.0)  # from http://mccormickml.com/2017/01/11/word2vec-tutorial-part-2-negative-sampling/
 
         # normalize the distributions
         # for caring type
