@@ -124,8 +124,12 @@ class Dataset(object):
     def get_batch(self, batch_size):
         a = [self.get_one_batch() for i in range(batch_size)]
         for t in a:
-            print t
-        print a
+            print "t %s", t
+        print "a %s", a
+        l = []
+        for i in range(batch_size):
+            l.append(self.get_one_batch())
+        print "l %s", l
         pairs = np.array([self.get_one_batch() for i in range(batch_size)])
         print pairs
         return pairs[:, 0], pairs[:, 1]
