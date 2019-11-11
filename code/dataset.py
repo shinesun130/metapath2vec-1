@@ -122,14 +122,14 @@ class Dataset(object):
         return node_context_pair
 
     def get_batch(self, batch_size):
-        a = [self.get_one_batch() for i in range(batch_size)]
-        for t in a:
-            print "t %s", t
-        print "a %s", a
+        # a = [self.get_one_batch() for i in range(batch_size)]
+        # for t in a:
+        #     print "t ", t
+        # print "a ", a
         l = []
         for i in range(batch_size):
             l.append(self.get_one_batch())
-        print "l %s", l
+        print "l ", l
         pairs = np.array([self.get_one_batch() for i in range(batch_size)])
         print pairs
         return pairs[:, 0], pairs[:, 1]
