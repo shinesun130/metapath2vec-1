@@ -123,6 +123,7 @@ class Dataset(object):
 
     def get_batch(self, batch_size):
         pairs = np.array([self.get_one_batch() for i in range(batch_size)])
+        print "pairs", pairs
         return pairs[:, 0], pairs[:, 1]
 
     def get_batch_data(self, batch_size):
