@@ -6,12 +6,13 @@ import argparse
 import os
 import sys
 import time
+import tensorflow as tf
 
 sys.path.append('./code')
 from skipgram import build_model, traning_op, train
 from dataset import Dataset
 
-
+tf.logging.set_verbosity(tf.logging.INFO)
 def parse_args():
     # Parses the arguments.
     parser = argparse.ArgumentParser(description="metapath2vec")

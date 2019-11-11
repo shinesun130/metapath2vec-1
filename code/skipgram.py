@@ -13,6 +13,7 @@ import numpy as np
 import tensorflow as tf
 
 
+tf.logging.set_verbosity(tf.logging.INFO)
 def build_model(BATCH_SIZE, VOCAB_SIZE, EMBED_SIZE, NUM_SAMPLED):
     '''
     Build the model (i.e. computational graph) and return the placeholders (input and output) and the loss 
