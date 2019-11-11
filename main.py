@@ -6,6 +6,7 @@ import argparse
 import os
 import sys
 import time
+
 import tensorflow as tf
 
 sys.path.append('./code')
@@ -13,6 +14,8 @@ from skipgram import build_model, traning_op, train
 from dataset import Dataset
 
 tf.logging.set_verbosity(tf.logging.INFO)
+
+
 def parse_args():
     # Parses the arguments.
     parser = argparse.ArgumentParser(description="metapath2vec")
@@ -46,14 +49,16 @@ def main(args):
         print("made the log directory", args.log)
 
     dataset = Dataset(random_walk_txt=args.walks, node_type_mapping_txt=args.types, window_size=args.window)
-    center_node_placeholder, context_node_placeholder, negative_samples_placeholder, loss = build_model(BATCH_SIZE=args.batch_size,
-                                                                                                        VOCAB_SIZE=len(
-                                                                                                            dataset.nodeid2index),
-                                                                                                        EMBED_SIZE=args.embedding_dim,
-                                                                                                        NUM_SAMPLED=args.negative_samples)
+    print "batch_size1 ", args.batch_size
+    center_node_placeholder, context_node_placeholder, negative_samples_placeholder, loss = build_model(
+        BATCH_SIZE=args.batch_size,
+        VOCAB_SIZE=len(
+            dataset.nodeid2index),
+        EMBED_SIZE=args.embedding_dim,
+        NUM_SAMPLED=args.negative_samples)
     optimizer = traning_op(loss, LEARNING_RATE=args.lr)
     train(center_node_placeholder, context_node_placeholder, negative_samples_placeholder, loss, dataset, optimizer,
-          NUM_EPOCHS=args.epochs, BATCH_SIZE=1, NUM_SAMPLED=args.negative_samples, care_type=args.care_type,
+          NUM_EPOCHS=args.epochs, BATCH_SIZE=args.batch_size, NUM_SAMPLED=args.negative_samples, care_type=args.care_type,
           LOG_DIRECTORY=args.log, LOG_INTERVAL=args.log_interval, MAX_KEEP_MODEL=args.max_keep_model)
 
 
