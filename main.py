@@ -49,7 +49,6 @@ def main(args):
         print("made the log directory", args.log)
 
     dataset = Dataset(random_walk_txt=args.walks, node_type_mapping_txt=args.types, window_size=args.window)
-    print "batch_size1 ", args.batch_size
     center_node_placeholder, context_node_placeholder, negative_samples_placeholder, loss = build_model(
         BATCH_SIZE=args.batch_size,
         VOCAB_SIZE=len(
