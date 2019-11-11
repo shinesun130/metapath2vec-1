@@ -127,6 +127,7 @@ class Dataset(object):
 
     def get_batch_data(self, batch_size):
         pairs = np.array([self.get_by_batch(batch_size)])
+        print pairs
         return pairs[:, 0], pairs[:, 1]
 
     def shffule(self):
